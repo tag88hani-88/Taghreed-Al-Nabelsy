@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arabic with Taghreed – Lesson 6 Quiz</title>
+<style>
+:root{--bg:#f3f5ee;--card:#fff;--ink:#1f2a1c;--mute:#5d6b58;--line:#d5dccb;--accent:#3f6b3a;--ok:#2e7d32;--okbg:#e3f2e1;--bad:#b3261e;--badbg:#fbe5e3}
+@media (prefers-color-scheme:dark){:root{--bg:#161b14;--card:#202719;--ink:#eef2e8;--mute:#a4b09c;--line:#36402f;--accent:#8fc486;--ok:#8fd68f;--okbg:#22381f;--bad:#f2928b;--badbg:#412220}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 40px}
+header{text-align:center;padding:28px 0 12px}
+#logo{max-height:90px;max-width:70%}
+.mark{font-size:1.7rem;font-weight:bold;color:var(--accent)}
+h1{font-size:1.2rem;margin:8px 0 2px}
+.sub{color:var(--mute);margin:0;font-size:.95rem}
+.stat{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:16px}
+.stat div.row{display:flex;justify-content:space-between;font-size:.9rem;color:var(--mute);margin-bottom:6px}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px}
+.n{color:var(--mute);font-size:.8rem}
+.q{font-weight:bold;margin:2px 0 12px;font-size:1.05rem}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:520px){.opts{grid-template-columns:1fr}}
+.opt{font:inherit;font-size:1.2rem;direction:rtl;text-align:right;color:inherit;background:transparent;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.res{text-align:center;padding:24px}
+.score{font-size:2.6rem;font-weight:bold}
+.btn{font:inherit;background:var(--accent);color:var(--card);border:0;border-radius:8px;padding:10px 22px;cursor:pointer;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <img id="logo" alt="Arabic with Taghreed" hidden>
+  <div class="mark" id="mark">🌿 Arabic with Taghreed</div>
+  <h1>Lesson 6: Daily Routine – Quiz</h1>
+  <p class="sub">Read the English question and choose the Shami answer.</p>
+</header>
+<div class="stat">
+  <div class="row"><span id="prog">Answered 0 / 30</span><span id="corr">Correct 0</span></div>
+  <div class="bar"><i id="bar"></i></div>
+</div>
+<div id="list"></div>
+<div class="card res" id="res" hidden>
+  <div class="n">Final score</div>
+  <div class="score" id="sc"></div>
+  <p id="msg"></p>
+  <button class="btn" type="button" id="again">Try again</button>
+</div>
+</div>
+<script>
+// To add your logo: put the image data (data:image/png;base64,...) or a file name between the quotes.
+var LOGO_SRC="";
+
+// Format: [English question, correct answer, wrong, wrong, wrong]
+var DATA=[
+["How do you say \"The key is on the coffee table\"?","المفتاح ع الطربيزة.","المفتاح بالمطبخ.","المفتاح بغرفة النوم.","المفتاح بالصالون."],
+["How do you say \"The fridge is in the kitchen\"?","البرّاد بالمطبخ.","البرّاد بغرفة النوم.","البرّاد بالصالون.","البرّاد ع الطربيزة."],
+["How do you say \"The bed is in the bedroom\"?","التخت بغرفة النوم.","التخت بالمطبخ.","التخت بالصالون.","التخت ع الطربيزة."],
+["How do you say \"The TV is in the guest room\"?","التلفزيون بالصالون.","التلفزيون بالمطبخ.","التلفزيون بغرفة النوم.","التلفزيون ع الطربيزة."],
+["How do you say \"I wake up\"?","بفيق","بنام","برجع","بروح"],
+["How do you say \"I get up\"?","بقوم","بلبس","برتاح","بفطر"],
+["How do you say \"I wash my face\"?","بغسل وشي","بفرشي اسناني","بتحمّم","بلبس"],
+["How do you say \"I brush my teeth\"?","بفرشي اسناني","بغسل وشي","بتحمّم","بشرب قهوة"],
+["How do you say \"I take a shower\"?","بتحمّم","بلبس","بفطر","برتاح"],
+["How do you say \"I get dressed\"?","بلبس","بتحمّم","بقوم","بنام"],
+["How do you say \"I have breakfast\"?","بفطر","بتغدّى","بتعشّى","برتاح"],
+["How do you say \"I drink coffee\"?","بشرب قهوة","بفطر","بروح ع الشغل","برجع ع البيت"],
+["How do you say \"I go to work\"?","بروح ع الشغل","برجع ع البيت","بنام","بفيق"],
+["How do you say \"I go back home\"?","برجع ع البيت","بروح ع الشغل","بتغدّى","بتعشّى"],
+["How do you say \"I have lunch\"?","بتغدّى","بفطر","بتعشّى","برتاح"],
+["How do you say \"I rest\"?","برتاح","بنام","بفيق","بقوم"],
+["How do you say \"I have dinner\"?","بتعشّى","بتغدّى","بفطر","بشرب قهوة"],
+["How do you say \"I go to sleep\"?","بنام","بفيق","برتاح","بقوم"],
+["Which expression means \"in the morning\"?","الصبح","الظهر","المسا","بالليل"],
+["Which expression means \"at noon\"?","الظهر","الصبح","بعد الظهر","المسا"],
+["Which expression means \"in the afternoon\"?","بعد الظهر","الظهر","المسا","بالليل"],
+["Which expression means \"in the evening\"?","المسا","الصبح","بالليل","الظهر"],
+["Which expression means \"at night\"?","بالليل","الصبح","المسا","الظهر"],
+["I wake up early in the morning.","الصبح بفيق بكير.","بالليل بفيق بكير.","الصبح بنام بكير.","الصبح برجع بكير."],
+["I wash my face and brush my teeth.","بغسل وشي وبفرّشي اسناني.","بغسل وشي وبتحمّم.","بفرّشي اسناني وبلبس.","بغسل وشي وبفطر."],
+["I have breakfast and drink coffee.","بفطر وبشرب قهوة.","بتغدّى وبشرب قهوة.","بفطر وبرتاح.","بتعشّى وبشرب قهوة."],
+["I go back home in the afternoon.","برجع ع البيت بعد الظهر.","بروح ع الشغل بعد الظهر.","برجع ع البيت الصبح.","بروح ع البيت الصبح."],
+["In the evening, I have dinner with my family.","المسا بتعشّى مع أهلي.","المسا بتغدّى مع أهلي.","الصبح بتعشّى مع أهلي.","بالليل بفطر مع أهلي."],
+["At night, I watch TV.","بالليل بتفرّج ع التلفزيون.","بالليل بروح ع الشغل.","الصبح بتفرّج ع التلفزيون.","بالليل برجع ع التلفزيون."]
+];
+var N=DATA.length,answered=0,correct=0;
+var list=document.getElementById("list");
+document.getElementById("prog").textContent="Answered 0 / "+N;
+if(LOGO_SRC){var lg=document.getElementById("logo");lg.src=LOGO_SRC;lg.hidden=false;document.getElementById("mark").hidden=true}
+function shuffle(a){for(var k=a.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1)),t=a[k];a[k]=a[j];a[j]=t}return a}
+function build(){
+  list.innerHTML="";answered=0;correct=0;update();document.getElementById("res").hidden=true;
+  DATA.forEach(function(d,idx){
+    var c=document.createElement("div");c.className="card";
+    var n=document.createElement("div");n.className="n";n.textContent="Question "+(idx+1)+" of "+N;
+    var q=document.createElement("p");q.className="q";q.textContent=d[0];
+    var box=document.createElement("div");box.className="opts";
+    shuffle(d.slice(1).map(function(t,k){return{t:t,c:k===0}})).forEach(function(o){
+      var b=document.createElement("button");b.type="button";b.className="opt";b.textContent=o.t;b.dataset.c=o.c?"1":"0";
+      b.onclick=function(){
+        var all=box.querySelectorAll(".opt");
+        all.forEach(function(x){x.disabled=true;if(x.dataset.c==="1")x.classList.add("ok")});
+        if(o.c)correct++;else b.classList.add("bad");
+        answered++;update();
+        if(answered===N)finish();
+      };
+      box.appendChild(b);
+    });
+    c.appendChild(n);c.appendChild(q);c.appendChild(box);list.appendChild(c);
+  });
+}
+function update(){
+  document.getElementById("prog").textContent="Answered "+answered+" / "+N;
+  document.getElementById("corr").textContent="Correct "+correct;
+  document.getElementById("bar").style.width=(answered/N*100)+"%";
+}
+function finish(){
+  var r=document.getElementById("res");r.hidden=false;
+  document.getElementById("sc").textContent=correct+" / "+N;
+  var p=correct/N;
+  document.getElementById("msg").textContent=p===1?"Perfect. Your daily routine vocabulary is solid.":p>=0.8?"Great work. Review the ones you missed and try again.":"Keep practising. Reread the lesson and try again.";
+  r.scrollIntoView({behavior:"smooth",block:"center"});
+}
+document.getElementById("again").onclick=function(){build();window.scrollTo({top:0,behavior:"smooth"})};
+build();
+</script>
+</body>
+</html>
