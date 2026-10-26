@@ -37,7 +37,7 @@ h1{font-size:1.15rem;margin:6px 0 2px}
 .exp{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--badbg);border-inline-start:5px solid var(--bad);font-size:.95rem}
 .exp.good{background:var(--okbg);border-color:var(--ok)}
 .exp .ar{direction:rtl;unicode-bidi:isolate;font-size:1.15rem}
-.res{background:var(--card);border:1px solid var(--line);border-top:6px solid #7b5ea7;border-radius:14px;padding:24px;text-align:center}
+.res{scroll-margin-top:70px;background:var(--card);border:1px solid var(--line);border-top:6px solid #7b5ea7;border-radius:14px;padding:24px;text-align:center}
 .score{font-size:2.8rem;font-weight:bold}
 .lvl{font-size:1.2rem;font-weight:bold;color:#7b5ea7}
 .miss{text-align:left;margin:14px 0;padding:0;list-style:none}
@@ -67,12 +67,12 @@ h1{font-size:1.15rem;margin:6px 0 2px}
   <div class="score" id="sc"></div>
   <div class="lvl" id="lvl"></div>
   <p id="msg"></p>
-  <div id="missWrap"></div>
   <div>
     <button class="btn b3" type="button" id="copy">📋 Copy result to send to your teacher</button>
     <button class="btn b4" type="button" id="again">🔁 Try again</button>
   </div>
   <p class="note" id="sendnote">Press “Copy result”, then paste it into your chat with your teacher on the platform and send it.</p>
+  <div id="missWrap"></div>
 </div>
 </div>
 <script>
@@ -200,7 +200,7 @@ function finish(){
     ms.forEach(function(x){var li=document.createElement("li");li.appendChild(document.createTextNode((x.i+1)+". "+eng(x.d[0])+" → "));var s=document.createElement("span");s.className="ar";s.textContent=x.d[1];li.appendChild(s);ul.appendChild(li)});
     w.appendChild(ul);
   }
-  r.scrollIntoView({behavior:"smooth",block:"center"});
+  r.scrollIntoView({behavior:"smooth",block:"start"});
 }
 document.getElementById("copy").onclick=function(){
   var b=this,t=summary();
